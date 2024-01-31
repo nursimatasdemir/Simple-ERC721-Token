@@ -11,6 +11,9 @@ contract TurtleKen is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
     Counters.Counter private _tokenIdCounter;
     uint256 MAX_SUPPLY = 100000;
+    uint256 MAX_MINT_PER_ADDRESS = 6;
+
+    mapping(address => uint256) public mintCount;
 
     constructor(address initialOwner)
         ERC721("Turtle Ken", "Ken")
@@ -19,6 +22,7 @@ contract TurtleKen is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     function safeMint(address to, string memory uri) public onlyOwner {
         require(Counters.current(_tokenIdCounter) <= MAX_SUPPLY, "I'm sorry we reached the cap");
+        require(mintCount[to] <= MAX_MINT_PER_ADDRESS, "Max mint per addres reached");
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -59,3 +63,4 @@ contract TurtleKen is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         return super.supportsInterface(interfaceId);
     }
 }
+
